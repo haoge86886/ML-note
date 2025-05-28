@@ -22,24 +22,21 @@ num_classes = 3
 W = torch.randn(num_features, num_classes, requires_grad=True)
 b = torch.zeros(num_classes, requires_grad=True)
 
-# 超参数
 lr = 0.1
 epochs = 1000
 
-# 训练过程
 for epoch in range(epochs):
     # 前向传播：计算 logits 和 softmax 概率
     logits = X_train @ W + b
     probs = F.softmax(logits, dim=1)
 
-    # 手动实现交叉熵损失（不用 nn.CrossEntropyLoss）
     log_probs = torch.log(probs + 1e-9)  # 防止 log(0)
     loss = -log_probs[range(len(y_train)), y_train].mean()
 
     # 反向传播
     loss.backward()
 
-    # 参数更新（SGD）
+    # 参数更新
     with torch.no_grad():
         W -= lr * W.grad
         b -= lr * b.grad
