@@ -1,3 +1,13 @@
+"""""
+可以类比逻辑回归,同样是将数据汇总后投入激活函数中得到(0,1)间的值,代表其取每一个类别的概率
+
+不同点在于:
+          1.为了处理多类别,w和b的维度要拓展到与类别数相同,以进行学习
+          2.激活函数换为softmax函数,ai = softmax(zi) = e^(zi) / Σ e^(zi)
+            结果分别为P{y=i|X},ai为预测的类别
+            
+仍然使用交叉熵损失函数：L = 1/n Σ -ln(ai)  if y=i
+"""""
 import torch
 import torch.nn.functional as F                         #函数模块
 from sklearn.datasets import make_classification
@@ -30,7 +40,7 @@ for epoch in range(epochs):
     logits = X_train @ W + b
     probs = F.softmax(logits, dim=1)
 
-    log_probs = torch.log(probs + 1e-9)  # 防止 log(0)
+    log_probs = torch.log(probs + 1e-9)                     # 防止 log(0)
     loss = -log_probs[range(len(y_train)), y_train].mean()
 
     # 反向传播
